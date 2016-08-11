@@ -43,6 +43,15 @@ def send_message(channel_id, message):
     print('message sent')
 
 
+def trump_message(channel_id, message):
+    slack_client.api_call(
+        "chat.postMessage",
+        channel=channel_id,
+        text=message,
+        username='rage',
+        icon_emoji=':trump_rage:'
+    )
+
 if __name__ == '__main__':
     channels = list_channels()
     if channels:

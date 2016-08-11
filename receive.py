@@ -1,12 +1,15 @@
-from flask import Flask, request, Response
+from flask import Flask, request, Response, jsonify
 from flask_slack import Slack
 from app import *
+import json
 
 
 app = Flask(__name__)
 
 SLACK_WEBHOOK_SECRET = os.environ.get('SLACK_WEBHOOK_SECRET')
 SLACK_RAGE_BOT = os.environ.get('SLACK_RAGE_BOT')
+SLACK_BOSCO_BOT = os.environ.get('SLACK_BOSCO_BOT')
+
 @app.route('/slack', methods=['POST'])
 def inbound():
     if request.form.get('token') == SLACK_WEBHOOK_SECRET:
@@ -20,24 +23,20 @@ def inbound():
 
 @app.route('/rage', methods=['POST'])
 def RAGE():
-    print(request.form.get('text'))
     if request.form.get('token') == SLACK_RAGE_BOT:
-        # channel = request.form.get('channel_name')
-        # channel_id = get_channel_id_from_name(channel)
-
-       #  send_message(channel_id=channel_id, message=request.form.get('text'))
-        response = {'response_type' : 'ephemeral',
-		'text': 'yee',
-	}
-	return request.form.get('text')
-    return None
+        user = request.form.get('user_name')
+	channel = request.form.get('channel_name')
+        channel_id = get_channel_id_from_name(channel)
+	message = "@{}: {}".format( user, request.form.get('text').encode('utf-8').upper())
+	trump_message(channel_id=channel_id, message=message)
+	print(os.environ.get('SLACK_RAGE_BOT'))
+    return Response(), 200
 
 @app.route('/botsco', methods=['POST'])
 def BOTSCO():
-    if request.form.get('token') == 'MEtufTdVQi9ssXynjZRO8Gif':
+    if request.form.get('token') == SLACK_BOSCO_BOT:
         channel = request.form.get('channel_name')
         channel_id = get_channel_id_from_name(channel)
-
         send_message(channel_id=channel_id, message=request.form.get('text'))
         return Response(), 200
 
