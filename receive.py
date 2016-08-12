@@ -29,7 +29,6 @@ def RAGE():
         channel_id = get_channel_id_from_name(channel)
 	message = "@{}: {}".format( user, request.form.get('text').encode('utf-8').upper())
 	trump_message(channel_id=channel_id, message=message)
-	print(os.environ.get('SLACK_RAGE_BOT'))
     return Response(), 200
 
 @app.route('/botsco', methods=['POST'])
@@ -38,6 +37,7 @@ def BOTSCO():
         channel = request.form.get('channel_name')
         channel_id = get_channel_id_from_name(channel)
         send_message(channel_id=channel_id, message=request.form.get('text'))
+	print("{} took over Botsco and said: {}".format(request.form.get('user_name'), request.form.get('text')))
         return Response(), 200
 
 @app.route('/', methods=['GET'])
